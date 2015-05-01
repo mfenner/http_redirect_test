@@ -29,15 +29,15 @@ class RedirectCheck
   end
 
   def success?
-    esponse.status == 200
+    response.status == 200
   end
 
   def gone?
-    esponse.status == 410
+    response.status == 410
   end
 
   def not_found?
-    esponse.status == 404
+    response.status == 404
   end
 
   def permanent_redirect?
@@ -45,11 +45,7 @@ class RedirectCheck
   end
 
   def redirected?
-    response.status == 302
-  end
-
-  def see_other?
-    response.status == 303
+    [300, 301, 302, 303].include?(response.status)
   end
 
   def redirected_path
