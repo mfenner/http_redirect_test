@@ -1,6 +1,6 @@
 require 'minitest'
 require 'uri'
-require 'net/http'
+require 'excon'
 
 require 'http_redirect_test/redirect_check'
 require 'http_redirect_test/resource_path'

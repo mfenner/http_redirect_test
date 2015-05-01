@@ -1,5 +1,5 @@
 require 'uri'
-require 'net/http'
+require 'excon'
 
 class RedirectCheck
   attr_reader :source_path, :destination_path
@@ -19,37 +19,35 @@ class RedirectCheck
   end
 
   def response
-    @response ||= Net::HTTP.start(uri.host, uri.port, use_ssl: ssl?) do |http|
-      return http.head(source_uri)
-    end
+    @response ||= Excon.get(source_uri)
   end
 
   def success?
-    response.is_a?(Net::HTTPOK)
+    response.is_a?(Excon::OK)
   end
 
   def gone?
-    response.is_a?(Net::HTTPGone)
+    response.is_a?(Excon::Gone)
   end
 
   def not_found?
-    response.is_a?(Net::HTTPNotFound)
+    response.is_a?(Excon::NotFound)
   end
 
   def redirected?
-    response.is_a?(Net::HTTPRedirection)
+    response.is_a?(Excon::Found)
   end
 
   def permanent_redirect?
-    redirected? && response.is_a?(Net::HTTPMovedPermanently)
+    redirected? && response.is_a?(Excon::MovedPermanently)
   end
 
   def redirected_path
-    response['location'].sub(/#{Regexp.escape("#{uri.scheme}://#{uri.host}")}:#{uri.port}/, '') if redirected?
+    response.headers['location'].sub(/#{Regexp.escape("#{uri.scheme}://#{uri.host}")}:#{uri.port}/, '') if redirected?
   end
 
   def header(name)
-    response[name]
+    response.headers[name]
   end
 
   private
