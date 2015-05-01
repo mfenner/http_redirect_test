@@ -21,6 +21,7 @@ class RedirectCheck
 
   def connection
     port = uri.port != 80 ? ":#{uri.port}" : ""
+    Excon.defaults[:middlewares] << Excon::Middleware::RedirectFollower
     @connection = Excon.new("#{scheme}://#{raw_domain}")
   end
 
