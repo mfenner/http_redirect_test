@@ -2,7 +2,7 @@ require 'uri'
 require 'excon'
 
 class RedirectCheck
-  attr_reader :source_path, :destination_path
+  attr_reader :source_path, :destination_path, :headers
 
   def initialize(domain, source_path, destination_path = nil, options={})
     @domain = domain
