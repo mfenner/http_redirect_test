@@ -22,7 +22,7 @@ class RedirectCheck
 
   def connection
     port = uri.port != 80 ? ":#{uri.port}" : ""
-    @connection = Excon.new("#{scheme}://#{raw_domain}", headers: options[:headers])
+    @connection = Excon.new("#{scheme}://#{raw_domain}", headers: options[:headers] || {})
   end
 
   def response
