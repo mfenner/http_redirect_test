@@ -4,8 +4,9 @@ require 'excon'
 class RedirectCheck
   attr_reader :source_path, :destination_path
 
-  def initialize(domain, source_path, destination_path = nil)
+  def initialize(domain, source_path, destination_path = nil, options={})
     @domain = domain
+    @headers = options[:headers] || {}
     @source_path = source_path.to_s
     @destination_path = destination_path.to_s
   end
@@ -18,8 +19,12 @@ class RedirectCheck
     @source_uri ||= (uri.query.nil?) ? uri.path : uri.path + "?" + uri.query
   end
 
+  def connection
+    @connection = Excon.new("#{scheme}://#{raw_domain}", headers: headers)
+  end
+
   def response
-    @response ||= Excon.get(source_uri)
+    @response ||= connection.get(path: source_uri)
   end
 
   def success?
