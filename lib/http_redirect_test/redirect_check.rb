@@ -3,11 +3,11 @@ require 'excon'
 require "excon/middlewares/redirect_follower"
 
 class RedirectCheck
-  attr_reader :source_path, :destination_path, :headers, :header, :body
+  attr_reader :source_path, :destination_path, :options, :headers, :header, :body
 
   def initialize(domain, source_path, destination_path = nil, options={})
     @domain = domain
-    @headers = options[:headers] || {}
+    @options = options
     @source_path = source_path.to_s
     @destination_path = destination_path.to_s
   end
@@ -22,7 +22,7 @@ class RedirectCheck
 
   def connection
     port = uri.port != 80 ? ":#{uri.port}" : ""
-    @connection = Excon.new("#{scheme}://#{raw_domain}")
+    @connection = Excon.new("#{scheme}://#{raw_domain}", headers: options[:headers])
   end
 
   def response
@@ -55,6 +55,10 @@ class RedirectCheck
 
   def header(name)
     response.headers[name]
+  end
+
+  def headers
+    response.headers
   end
 
   def body
