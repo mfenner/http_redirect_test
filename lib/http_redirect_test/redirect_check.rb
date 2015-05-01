@@ -28,23 +28,23 @@ class RedirectCheck
   end
 
   def success?
-    response.is_a?(Excon::OK)
+    response.is_a?(Excon::Errors::OK)
   end
 
   def gone?
-    response.is_a?(Excon::Gone)
+    response.is_a?(Excon::Errors::Gone)
   end
 
   def not_found?
-    response.is_a?(Excon::NotFound)
+    response.is_a?(Excon::Errors::NotFound)
   end
 
   def redirected?
-    response.is_a?(Excon::Found)
+    response.is_a?(Excon::Errors::Found)
   end
 
   def permanent_redirect?
-    redirected? && response.is_a?(Excon::MovedPermanently)
+    redirected? && response.is_a?(Excon::Errors::MovedPermanently)
   end
 
   def redirected_path
