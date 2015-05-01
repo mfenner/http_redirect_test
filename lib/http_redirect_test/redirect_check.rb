@@ -3,7 +3,7 @@ require 'excon'
 require "excon/middlewares/redirect_follower"
 
 class RedirectCheck
-  attr_reader :source_path, :destination_path, :headers
+  attr_reader :source_path, :destination_path, :headers, :header, :body
 
   def initialize(domain, source_path, destination_path = nil, options={})
     @domain = domain
@@ -55,6 +55,10 @@ class RedirectCheck
 
   def header(name)
     response.headers[name]
+  end
+
+  def body
+    response.body
   end
 
   private
