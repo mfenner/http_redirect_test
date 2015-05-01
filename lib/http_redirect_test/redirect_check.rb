@@ -1,5 +1,6 @@
 require 'uri'
 require 'excon'
+require "excon/middlewares/redirect_follower"
 
 class RedirectCheck
   attr_reader :source_path, :destination_path, :headers
@@ -21,8 +22,8 @@ class RedirectCheck
 
   def connection
     port = uri.port != 80 ? ":#{uri.port}" : ""
-    Excon.defaults[:middlewares] << Excon::Middleware::RedirectFollower
-    @connection = Excon.new("#{scheme}://#{raw_domain}")
+    @connection = Excon.new("#{scheme}://#{raw_domain}",
+      middlewares: Excon.defaults[:middlewares] << Excon::Middleware::RedirectFollower)
   end
 
   def response
